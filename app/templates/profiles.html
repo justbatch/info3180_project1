@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+{% include 'flash_messages.html' %}
+
+{% for user in users %}
+
+<div class="user-control">
+     <img src="{{ url_for('static', filename='uploads/' + user.photo) }}"></img> 
+     
+     {{user.firstname}} {{user.lastname}}</br>
+     <i class="fa fa-user-o"></i> {{user.gender}}</br>
+     <i class="fa fa-map-marker"></i> {{user.location}}</br>
+</div>
+
+{% endfor %}
+
+{% endblock %}
