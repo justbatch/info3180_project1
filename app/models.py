@@ -11,10 +11,7 @@ class UserProfile(db.Model):
     photo = db.column(db.String(80))
     bio = db.Column(db.String(255))
     created_on = db.Column(db.String(80))
-    
-    # username = db.Column(db.String(80), unique=True)
-    # password = db.Column(db.String(255))
-    
+
     def __init__(self, firstname, lastname, email, location, gender, bio, photo, created_on):
         self.firstname = firstname
         self.lastname = lastname
@@ -24,15 +21,6 @@ class UserProfile(db.Model):
         self.bio = bio
         self.photo = photo
         self.created_on = created_on
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
 
     def get_id(self):
         try:

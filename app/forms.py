@@ -7,10 +7,10 @@ from wtforms.validators import InputRequired, DataRequired
 class ProfileForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired()]) 
     lastname = StringField('Last Name', validators=[DataRequired()])
-    gender = SelectField('Gender', choices=[('Female, Female', 'Male, Male')], validators=[DataRequired()])
+    gender = SelectField('Gender', choices=[("F", "Female"), ("M", "Male")], validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired()])
-    photo = FileField('Add Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Photo Only!'])])
+    img = FileField('Add Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Photo Only!'])])
     bio = TextField('Biography', validators=[DataRequired()])
     
 # class LoginForm(FlaskForm):

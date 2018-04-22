@@ -4,14 +4,26 @@
 
 {% include 'flash_messages.html' %}
 
-{% for user in users %}
 
-<div class="user-control">
-     <img src="{{ url_for('static', filename='uploads/' + user.photo) }}"></img> 
+
+
+     {% for img in image %}
      
-     {{user.firstname}} {{user.lastname}}</br>
-     <i class="fa fa-user-o"></i> {{user.gender}}</br>
-     <i class="fa fa-map-marker"></i> {{user.location}}</br>
+         <div class="img-layout">
+         
+             <ul>
+                    <img src="{{ url_for('static', filename='uploads/' + user.img ) }}"></img>
+             </ul>
+             
+         </div>
+     {% endfor %}
+
+{% for user in users %}  
+<div class="user-control">
+
+     {{ user.firstname }} {{ user.lastname }}</br
+     <i class="fa fa-user-o"></i> {{ user.gender }}</br>
+     <i class="fa fa-map-marker"></i> {{ user.location }}</br>
 </div>
 
 {% endfor %}

@@ -7,7 +7,7 @@ This file creates your application.
 
 from app import app, db
 from werkzeug.security import check_password_hash
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.utils import secure_filename
 from forms import ProfileForm
@@ -35,97 +35,74 @@ def date_created():
     now = datetime.datetime.now()
     return now.strftime("%c")
 
-
 #return current date when the user sign up  
-@app.route('/profile/', methods=["GET", "POST"])
-@app.route('/profile/<userid>')
-def profile():
+ # after here I should have
+
+@app.route('/profile/<userid>') 
+@app.route('/profile', methods=["GET", "POST"])
+def profile(userid = None): # I tried that too and even did this in the ridrect
     formfile = ProfileForm()
-    
+    if userid:
+        # this is working now. test it 
+        # when the form is submitted and the user gets created, it redirects to profile/userid 
+        return str(userid)
     if request.method == "POST":
         if formfile.validate_on_submit():
+            
             firstname = formfile.firstname.data
             lastname = formfile.lastname.data
             gender = formfile.gender.data
             email = formfile.email.data
             location = formfile.location.data
-            photo = formfile.photo.data
+            img = formfile.img.data
             bio = formfile.bio.data
             dateCreated = date_created()
             
-            filename = secure_filename(photo.filename)
-            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            photo = secure_filename(img.filename)
+            img.save(os.path.join(app.config['UPLOAD_FOLDER'], photo))
             
-            newUser = UserProfile(firstname, lastname, gender, email, location, filename, bio, dateCreated)
-            
+            newUser = UserProfile(firstname, lastname, email, location, gender, bio, photo, dateCreated)
             ##Get user information to be added to database
             db.session.add(newUser)
             db.session.commit()
             
-            flash("Profile Successfully Created")
-            return redirect(url_for('profile'))
-    flash("Profile Unsuccessfully Created")
+            ##Get new users or users id
+            userid = newUser.get_id()
+            
+            ##worked now I was trying a if statement in my profile that after it is submitted it will bring up a display
+            
+            #sorry about started to look at something
+            # where do you want to navigate to after the user is created? 
+            #should be the same page but along with the new userid in the url, basically should be routed to the new user profile after submission
+            flash("Profile Created", "Success")
+            return  redirect('/profile/'+str(userid))
+            
+    # flash_errors(formFile)        
     return render_template('profile.html', form=formfile)
+
+def get_uploaded_images():
+    images = []
+    for files in os.walk(app.config['UPLOAD_FOLDER']):
+        for file in files:
+            images.append(file)
+    
+    images.sort()
+    del images[0]
+    return images
     
 @app.route('/profiles')
 def profiles():
-    ListUsers = db.session.UserProfile.query.all()
+    # listUsers = UserProfile.query.all()
+    listUsers = db.session.query(UserProfile).all()
+    # userphoto = get_uploaded_images()
     users = []
-    for user in ListUsers:
-        users.append(user)
+    users.append(listUsers)
+    
     return render_template('profiles.html', users=users)
-    
-@app.route('/profile/<userid>')
-def userProfile(userid):
-    user = UserProfile.query.filter_by(id=userid).first()
-    return render_template('profiles.html', user = user)
-
-
-# @app.route("/login/", methods=["GET", "POST"])
-# def login():
-#     form = LoginForm()
-    
-#     if request.method == "POST":
-#         if form.validate_on_submit():
-#             # Get the username and password values from the form.
-#             username = form.username.data
-#             password = form.password.data
-#             # using your model, query database for a user based on the username
-#             # and password submitted
-#             user = UserProfile.query.filter_by(username = username).first()
-#             # store the result of that query to a `user` variable so it can be
-#             # passed to the login_user() method.
-#             if user is not None and user.password:
-#                 login_user(user)
-#                 flash('Log in was successful', 'success')
-#                 return redirect(url_for("profile"))
-#             else:
-#                 flash('Wrong password or username', 'Danger!')
-#     return render_template('login.html', form=form)
-
-# @app.route("/secure_page/")
-# @login_required
-# def secure_page():
-#     return render_template('secure_page.html')
-    
-# @app.route("/logout/")
-# def logout():
-#     logout_user()
-#     flash('Logout was successful')
-#     return redirect('home')
-    
-
-
-# # user_loader callback. This callback is used to reload the user object from
-# # the user ID stored in the session
-# @login_manager.user_loader
-# def load_user(id):
-#     return UserProfile.query.get(int(id))
 
 ###
 # The functions below should be applicable to all Flask apps.
 ###
-
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):

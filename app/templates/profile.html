@@ -5,7 +5,6 @@
 {% include 'flash_messages.html' %}
 
 <div class="main">
-    
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('profile') }}">
         
         {{ form.csrf_token }}
@@ -25,8 +24,8 @@
         {{ form.location.label }}
         {{ form.location(class="form-control", placeholder="Kingston, Jamaica") }}
         
-        {{ form.photo.label }}
-        {{ form.photo(class="form-control") }}
+        {{ form.img.label }}
+        {{ form.img(class="form-control") }}
         
         {{ form.bio.label }}
         {{ form.bio(class="form-control", placeholder="Write something about yourself") }}
@@ -38,5 +37,5 @@
         <button type="submit" name="submit" class="btn btn-primary"> Add Profile </button>
         
     </form>
-
+</div>
 {% endblock %}
