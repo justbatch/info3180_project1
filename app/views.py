@@ -63,7 +63,6 @@ def profile():
             
             flash("Profile Created", "Success")
             return  redirect(url_for('profiles'))
-            
     # flash_errors(formfile)        
     return render_template('profile.html', form=formfile)
 
@@ -80,19 +79,16 @@ def get_uploaded_images():
 @app.route('/profiles')
 def profiles():
     # listUsers = UserProfile.query.all()
-    listUsers = db.session.query(UserProfile).all()
+    listUsers = db.session.query(UserProfile.lastname).all()
     # userphoto = get_uploaded_images()
-    users = []
-    users.append(listUsers)
-    
-    return render_template('profiles.html', users=users)
+    return render_template('profiles.html', users=listUsers)
 
 @app.route('/profile/<userid>')
 def userid(userid):
     if userid is None:
         error = "User does not exist"
         return render_template('home.html', error=error)
-    userid = db.session.query.filter_by(id=userid).first
+    userid = db.session.query(UserProfile.lastname).order_b(id=userid)
     return  render_template('userid.html', userid=userid)
     
 ###

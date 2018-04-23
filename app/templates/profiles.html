@@ -4,11 +4,7 @@
 
 {% include 'flash_messages.html' %}
 
-
-
-
-     {% for img in image %}
-     
+{% for user in users %}     
          <div class="img-layout">
          
              <ul>
@@ -16,15 +12,15 @@
              </ul>
              
          </div>
-     {% endfor %}
 
-{% for user in users %}  
-<div class="user-control">
-
-     {{ user.firstname }} {{ user.lastname }}</br
-     <i class="fa fa-user-o"></i> {{ user.gender }}</br>
-     <i class="fa fa-map-marker"></i> {{ user.location }}</br>
-</div>
+ 
+          <div class="user-control">
+          
+               {{ user.firstname }} 
+               {{ user.lastname }}</br>
+               <i class="fa fa-user-o"></i> {{ user.gender }}</br>
+               <i class="fa fa-map-marker"></i> {{ user.location }}</br>
+          </div>
 
 {% endfor %}
 

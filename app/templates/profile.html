@@ -5,7 +5,7 @@
 {% include 'flash_messages.html' %}
 
 <div class="main">
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('profile') }}">
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('profiles') }}">
         
         {{ form.csrf_token }}
         
