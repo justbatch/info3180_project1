@@ -31,21 +31,15 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+#return current date when the user sign up 
 def date_created():
     now = datetime.datetime.now()
     return now.strftime("%c")
 
-#return current date when the user sign up  
- # after here I should have
-
-@app.route('/profile/<userid>') 
 @app.route('/profile', methods=["GET", "POST"])
-def profile(userid = None): # I tried that too and even did this in the ridrect
+def profile():
     formfile = ProfileForm()
-    if userid:
-        # this is working now. test it 
-        # when the form is submitted and the user gets created, it redirects to profile/userid 
-        return str(userid)
+   
     if request.method == "POST":
         if formfile.validate_on_submit():
             
@@ -61,23 +55,16 @@ def profile(userid = None): # I tried that too and even did this in the ridrect
             photo = secure_filename(img.filename)
             img.save(os.path.join(app.config['UPLOAD_FOLDER'], photo))
             
+            #new user data from form adding to the database paramaters
             newUser = UserProfile(firstname, lastname, email, location, gender, bio, photo, dateCreated)
             ##Get user information to be added to database
             db.session.add(newUser)
             db.session.commit()
             
-            ##Get new users or users id
-            userid = newUser.get_id()
-            
-            ##worked now I was trying a if statement in my profile that after it is submitted it will bring up a display
-            
-            #sorry about started to look at something
-            # where do you want to navigate to after the user is created? 
-            #should be the same page but along with the new userid in the url, basically should be routed to the new user profile after submission
             flash("Profile Created", "Success")
-            return  redirect('/profile/'+str(userid))
+            return  redirect(url_for('profiles'))
             
-    # flash_errors(formFile)        
+    # flash_errors(formfile)        
     return render_template('profile.html', form=formfile)
 
 def get_uploaded_images():
@@ -100,6 +87,14 @@ def profiles():
     
     return render_template('profiles.html', users=users)
 
+@app.route('/profile/<userid>')
+def userid(userid):
+    if userid is None:
+        error = "User does not exist"
+        return render_template('home.html', error=error)
+    userid = db.session.query.filter_by(id=userid).first
+    return  render_template('userid.html', userid=userid)
+    
 ###
 # The functions below should be applicable to all Flask apps.
 ###
